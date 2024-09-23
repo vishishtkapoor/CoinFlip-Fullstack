@@ -1,8 +1,19 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
+const connectDB = require('./config/db');
+require('dotenv').config();
 
 const app = express();
+connectDB();
+
+// Your app routes and middleware here
+
+const PORT = process.env.PORT || 4000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
+
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
