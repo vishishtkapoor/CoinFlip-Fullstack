@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import User from '../components/user';
+import Flip from '../components/flip';
 
 const GameDetails = () => {
     const { gameId } = useParams(); // Get the gameId from the URL
@@ -15,6 +16,9 @@ const GameDetails = () => {
                     <h2 className="text-2xl font-semibold mb-4">Game Details</h2>
                     <p className="text-lg">Game ID: {gameId}</p>
                     {/* Add additional game details or actions here */}
+                </div>
+                <div>
+                    <Flip />
                 </div>
             </div>
         </div>
