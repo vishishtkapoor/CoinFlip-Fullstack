@@ -28,8 +28,8 @@ function Home() {
 
     // Cleanup on unmount
     return () => {
-      newSocket.off('activeGames');  // Remove the listener
-      newSocket.close();             // Close the socket connection
+      newSocket.off('activeGames');
+      newSocket.close();
     };
   }, []);
 
@@ -54,27 +54,28 @@ function Home() {
             </button>
           </Link>
 
+
           {/* Game Cards */}
-          <div className="mt-6 pt-4 pb-20 w-auto">
-            {gameData.length === 0 ? (
-              <p>No active games available.</p>
-            ) : (
-              gameData.map((game) => (
-                <Box
-                  key={game.gameId}
-                  player1={game.player1}
-                  player2={game.player2 || 'Waiting for Player 2'}
-                  status={game.status}
-                  wager={game.wager}
-                  gameId={game.gameId}
-                />
-              ))
-            )}
-          </div>
-        </div>
+
+          <div className="game-cards mt-6 pt-4 pb-20 w-auto">
+        {gameData.length === 0 ? (
+          <p>No active games available.</p>
+        ) : (
+          gameData.map((game) => (
+            <Box
+              key={game.gameId}
+              player1={game.player1}
+              player2={game.player2 || 'Waiting for Player 2'}
+              status={game.status}
+              wager={game.wager}
+              gameId={game.gameId}
+            />
+          ))
+        )}
       </div>
+    </div>
+    </div>
     </div>
   );
 }
-
 export default Home;

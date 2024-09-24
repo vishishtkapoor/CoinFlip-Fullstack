@@ -10,10 +10,6 @@ connectDB();
 // Your app routes and middleware here
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
-
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
@@ -31,6 +27,25 @@ const broadcastActiveGames = () => {
     io.emit('activeGames', games);
 };
 
+// Helper function to clean up game on player disconnection
+const cleanupGameOnDisconnect = (socketId) => {
+    let gamesToDelete = [];
+
+    for (let gameId in games) {
+        const game = games[gameId];
+        if (game.player1 === socketId || game.player2 === socketId) {
+            gamesToDelete.push(gameId);
+            console.log('Game removed due to player disconnection:', gameId);
+        }
+    }
+
+    gamesToDelete.forEach(gameId => {
+        delete games[gameId];
+    });
+
+    broadcastActiveGames();
+};
+
 io.on('connection', (socket) => {
     console.log('A user connected:', socket.id);
 
@@ -44,7 +59,7 @@ io.on('connection', (socket) => {
             player1: socket.id,
             player2: null,
             wager: data.wager,
-            status: 'Waiting',  // Game waiting for player 2
+            status: 'Waiting for Player 2',  // Game waiting for player 2
         };
 
         console.log('Game Created:', games[gameId]);
@@ -79,25 +94,29 @@ io.on('connection', (socket) => {
     // Handle player disconnection
     socket.on('disconnect', () => {
         console.log('A user disconnected:', socket.id);
+        cleanupGameOnDisconnect(socket.id);
+    });
 
-        let gamesToDelete = [];
-        for (let gameId in games) {
-            const game = games[gameId];
-            if (game.player1 === socket.id || game.player2 === socket.id) {
-                gamesToDelete.push(gameId);
-                console.log('Game removed due to player disconnection:', gameId);
-            }
+    // Handle the completion of a game (e.g., when the game finishes)
+    socket.on('completeGame', (gameId, callback) => {
+        const game = games[gameId];
+        if (game) {
+            game.status = 'Completed';  // Mark the game as completed
+            console.log('Game completed:', gameId);
+            callback({ success: true });
+
+            // Optionally, clean up completed games after a certain time
+            setTimeout(() => {
+                delete games[gameId];
+                broadcastActiveGames();
+            }, 60000);  // Clean up after 60 seconds
+        } else {
+            callback({ success: false, message: 'Game not found' });
         }
-
-        gamesToDelete.forEach(gameId => {
-            delete games[gameId];
-        });
-
-        // Broadcast the updated list of active games
-        broadcastActiveGames();
     });
 });
 
-server.listen(4000, () => {
-    console.log('Server is running on port 4000');
+// Start the server
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });

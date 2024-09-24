@@ -13,13 +13,24 @@ export const Box = ({ player1, player2, status, wager, gameId }) => {
             <div className="absolute w-3 top-[30px] left-4 font-medium text-white text-[10px] whitespace-nowrap">
                 vs
             </div>
-            <Link to={`/game/${gameId}`}>
-                <button className="absolute w-24 h-7 top-[41px] left-[237px] bg-[#d0bcff80] rounded">
+
+            {/* Conditional rendering based on game status */}
+            {status === 'Waiting for Player 2' ? (
+                <Link to={`/game/${gameId}`}>
+                    <button className="absolute w-24 h-7 top-[41px] left-[237px] bg-[#d0bcff80] rounded">
+                        <div className="flex items-center justify-center gap-2 px-6 py-2.5 relative -top-1.5">
+                            <div className="font-medium text-[#381e72] text-sm text-center">Join Now</div>
+                        </div>
+                    </button>
+                </Link>
+            ) : (
+                <button className="absolute w-24 h-7 top-[41px] left-[237px] bg-[#d0bcff80] rounded opacity-50 cursor-not-allowed">
                     <div className="flex items-center justify-center gap-2 px-6 py-2.5 relative -top-1.5">
-                        <div className="font-medium text-[#381e72] text-sm text-center">Join Now</div>
+                        <div className="font-medium text-[#381e72] text-sm text-center">In Progress</div>
                     </div>
                 </button>
-            </Link>
+            )}
+
             <div className="absolute w-[76px] h-[18px] top-[9px] left-[238px] bg-[#ffffffb2] rounded-sm">
                 <div className="font-normal text-[#065e24] text-[10px] text-center">
                     {status}

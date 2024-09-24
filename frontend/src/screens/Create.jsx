@@ -15,7 +15,7 @@ const Create = () => {
                 <div className="flex flex-col pt-4">
                         <User />
                     {/* Include CreateGame Component */}
-                    <div className="pt-32 flex justify-center">
+                    <div className="flex items-center justify-center">
                         <CreateGame onGameCreated={handleGameCreated} />
                     </div>
                 </div>

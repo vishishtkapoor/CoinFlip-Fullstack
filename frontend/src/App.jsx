@@ -20,7 +20,6 @@ function App() {
           <Route path="/create" element={<Create />} />
           <Route path="/game/:gameId" element={<GameDetails />} /> {/* Route for GameDetails */}
         </Routes>
-
         {/* Navigation Bar */}
         <NavBar />
       </div>
